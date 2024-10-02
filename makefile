@@ -1,17 +1,22 @@
 # Makefile
 
-# Variables
 DOCKER_COMPOSE=docker compose
-CONTAINER_ID=0cb2c26ccb00
+CONTAINER_NAME=php
+CONTAINER_ID_FILE=.container_id
 
-# Start the Docker containers
 start:
 	$(DOCKER_COMPOSE) up -d
+	docker ps -q -f name=$(CONTAINER_NAME) > $(CONTAINER_ID_FILE)
 
-# Stop the Docker containers and remove all related resources (containers, networks, volumes, images)
 stop:
 	$(DOCKER_COMPOSE) down
+	rm -f $(CONTAINER_ID_FILE)
 
-# Open a bash shell inside a running container
 shell:
-	sudo docker exec -it $(CONTAINER_ID) /bin/bash
+	@if [ ! -s $(CONTAINER_ID_FILE) ]; then \
+		exit 1; \
+	fi
+	sudo docker exec -it $$(cat $(CONTAINER_ID_FILE)) /bin/bash
+
+apache-stop:
+	sudo systemctl stop apache2.service
