@@ -1,7 +1,5 @@
-# Makefile
-
 DOCKER_COMPOSE=docker compose
-CONTAINER_NAME=php
+CONTAINER_NAME=symfony-docker-php-1
 CONTAINER_ID_FILE=.container_id
 
 start:
@@ -13,10 +11,7 @@ stop:
 	rm -f $(CONTAINER_ID_FILE)
 
 shell:
-	@if [ ! -s $(CONTAINER_ID_FILE) ]; then \
-		exit 1; \
-	fi
-	sudo docker exec -it $$(cat $(CONTAINER_ID_FILE)) /bin/bash
+	sudo docker exec -it $(CONTAINER_NAME) /bin/bash
 
 apache-stop:
 	sudo systemctl stop apache2.service
